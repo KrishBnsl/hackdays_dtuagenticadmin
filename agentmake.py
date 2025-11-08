@@ -10,6 +10,7 @@ import base64
 from langchain.messages import HumanMessage
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.tools import tool
+from langchain.messages import ToolMessage
 
 os.environ["GEMINI_API_KEY"] = "AIzaSyDPGFLcb_iuSj27IW32YSMYQYDadrppG9s"
 os.environ["GOOGLE_API_KEY"] = "AIzaSyDPGFLcb_iuSj27IW32YSMYQYDadrppG9s"
@@ -40,19 +41,14 @@ document_ids = vector_store.add_documents(documents=all_splits)
 
 #print(document_ids[:3])
 
-@tool(response_format="content_and_artifact")
+@tool(description="to get the context of the marking scheme",response_format="content_and_artifact")
 def retrieve_context(query: str):
-    """Retrieve information to help answer a query."""
     retrieved_docs = vector_store.similarity_search(query, k=2)
     serialized = "\n\n".join(
         (f"Source: {doc.metadata}\nContent: {doc.page_content}")
         for doc in retrieved_docs
     )
     return serialized, retrieved_docs
-def get_weather(city: str) -> str:
-    """Get weather for a given city."""
-    return f"It's always sunny in {city}!"
-
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
@@ -60,8 +56,9 @@ llm = ChatGoogleGenerativeAI(
     max_tokens=None,
     timeout=None,
     max_retries=2,
-    tools = [get_weather]
 )
+
+llm  = llm.bind_tools([retrieve_context])
 
 SYSTEM_PROMPT='''
 you are a professor in Delhi Technological University who has been assigned to grade these exam sheets pdf.
