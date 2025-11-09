@@ -14,8 +14,8 @@ from langchain_core.messages import HumanMessage, ToolMessage
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.tools import tool
 
-os.environ["GEMINI_API_KEY"] = "AIzaSyBq1Oce_OooZduoZXHz3-ze434hpRGcE3w"
-os.environ["GOOGLE_API_KEY"] = "AIzaSyBq1Oce_OooZduoZXHz3-ze434hpRGcE3w"
+os.environ["GEMINI_API_KEY"] = "insert api key"
+os.environ["GOOGLE_API_KEY"] = "insert api key"
 
 embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
 
